@@ -1,20 +1,37 @@
 import Layout from "@/components/Layout";
-import React from "react";
+import TaskCard from "@/components/Task/TaskCard";
+import getTasks from "@/utils/getTasks";
+import React, { useEffect, useState } from "react";
 
 export default function Todo() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const allTasks = async () => {
+      const t = await getTasks();
+      setTasks(t);
+    };
+
+    allTasks();
+  }, []);
+
   return (
     <>
       <Layout>
-        <div className="w-full h-full p-6 flex flex-col flex-wrap gap-4">
-          <div className="flex justify-center gap-4">
-            <span className="py-2 px-4 rounded-xl bg-sky-300 text-sky-900 text-center cursor-pointer hover:opacity-70">
-              Today
-            </span>
-
-            <span className="py-2 px-4 rounded-xl bg-sky-400 text-sky-900 text-center cursor-pointer hover:opacity-70">
-              This Week
-            </span>
-          </div>
+        <div className="w-full h-full p-6 flex flex-col items-center flex-wrap gap-4">
+          {tasks &&
+            tasks instanceof Array &&
+            tasks.map((task, i) => (
+              <>
+                <TaskCard
+                  key={`task_${i}`}
+                  name={task.name}
+                  description={task.description}
+                  severity={task.severity}
+                  time={task.time}
+                />
+              </>
+            ))}
         </div>
       </Layout>
     </>
